@@ -41,41 +41,40 @@
     }
     .loader {
       position: relative;
-      width: 6rem;
-      height: 6rem;
-      background-color: rgba(0, 0, 0, 0.5);
-      transform: rotate(45deg);
-      overflow: hidden;
+      width: 16rem;
+      height: 16rem;
+      background: linear-gradient(
+        102.2deg,
+        rgb(250, 45, 66) 9.6%,
+        rgb(245, 104, 104) 96.1%
+      );
+      transform: rotateX(65deg) rotate(45deg);
+      color: #000;
+      animation: layers1 1s linear infinite alternate;
     }
     .loader:after {
       content: "";
       position: absolute;
-      inset: 8px;
-      margin: auto;
-      background: #222b32;
+      inset: 0;
+      background: linear-gradient(to right, rgb(5, 117, 230), rgb(2, 27, 121));
+      animation: layerTr 1s linear infinite alternate;
     }
-    .loader:before {
-      content: "";
-      position: absolute;
-      inset: -15px;
-      margin: auto;
-      background: linear-gradient(
-        90deg,
-        rgba(2, 0, 36, 1) 0%,
-        rgba(9, 13, 121, 1) 15%,
-        rgba(2, 232, 152, 1) 48%,
-        rgba(255, 0, 78, 1) 100%
-      );
-      animation: diamondLoader 2s linear infinite;
-    }
-    @keyframes diamondLoader {
-      0%,
-      10% {
-        transform: translate(-64px, -64px) rotate(-45deg);
+
+    @keyframes layers1 {
+      0% {
+        box-shadow: 0px 0px 0 0px;
       }
       90%,
       100% {
-        transform: translate(0px, 0px) rotate(-45deg);
+        box-shadow: 20px 20px 0 -4px;
+      }
+    }
+    @keyframes layerTr {
+      0% {
+        transform: translate(0, 0) scale(1);
+      }
+      100% {
+        transform: translate(-25px, -25px) scale(1);
       }
     }
   </style>
@@ -89,7 +88,7 @@
     <main class="container" id="container">
       <div class="d-flex justify-content-center align-items-center vh-100">
         <div
-          class="text-center animate__animated animate__fadeIn animate__delay-2s"
+          class="text-center animate__animated animate__fadeIn animate__delay-4s"
         >
           <h1 class="display-1 mb-3">Temperatura</h1>
           <h2 class="display-3 mb-3" id="grados"></h2>
@@ -144,7 +143,7 @@
       };
 
       const wait = () => {
-        myVar = setTimeout(showPage, 1900);
+        myVar = setTimeout(showPage, 4000);
       };
 
       let colors = {};
