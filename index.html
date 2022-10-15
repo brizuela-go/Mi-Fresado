@@ -164,7 +164,7 @@
 
       const sendRequest = (data) => {
         if (data >= 200) {
-          xhr.open("POST", "http://127.0.0.1:5000/send-sms", true);
+          xhr.open("POST", "http://127.0.0.1:5000/", true);
           xhr.send();
         }
       };
