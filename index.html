@@ -22,6 +22,10 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/5.0.0/mdb.min.css"
       rel="stylesheet"
     />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+    />
   </head>
   <style type="text/css">
     /* poppins font */
@@ -35,11 +39,58 @@
     h2 {
       font-size: 5rem !important;
     }
+    .loader {
+      position: relative;
+      width: 6rem;
+      height: 6rem;
+      background-color: rgba(0, 0, 0, 0.5);
+      transform: rotate(45deg);
+      overflow: hidden;
+    }
+    .loader:after {
+      content: "";
+      position: absolute;
+      inset: 8px;
+      margin: auto;
+      background: #222b32;
+    }
+    .loader:before {
+      content: "";
+      position: absolute;
+      inset: -15px;
+      margin: auto;
+      background: linear-gradient(
+        90deg,
+        rgba(2, 0, 36, 1) 0%,
+        rgba(9, 13, 121, 1) 15%,
+        rgba(2, 232, 152, 1) 48%,
+        rgba(255, 0, 78, 1) 100%
+      );
+      animation: diamondLoader 2s linear infinite;
+    }
+    @keyframes diamondLoader {
+      0%,
+      10% {
+        transform: translate(-64px, -64px) rotate(-45deg);
+      }
+      90%,
+      100% {
+        transform: translate(0px, 0px) rotate(-45deg);
+      }
+    }
   </style>
-  <body>
-    <main class="container">
+  <body onload="wait()">
+    <div
+      class="d-flex justify-content-center align-items-center vh-100"
+      id="loader"
+    >
+      <span class="loader"></span>
+    </div>
+    <main class="container" id="container">
       <div class="d-flex justify-content-center align-items-center vh-100">
-        <div class="text-center">
+        <div
+          class="text-center animate__animated animate__fadeIn animate__delay-2s"
+        >
           <h1 class="display-1 mb-3">Temperatura</h1>
           <h2 class="display-3 mb-3" id="grados"></h2>
           <i class="far fa-thumbs-up fa-4x" id="grados-icon"></i>
@@ -84,6 +135,18 @@
       const grados = document.getElementById("grados");
       const gradosIcon = document.getElementById("grados-icon");
 
+      var myVar;
+
+      const showPage = () => {
+        document.getElementById("loader").className = "d-none";
+        document.getElementById("container").style.display = "block";
+        showGrados();
+      };
+
+      const wait = () => {
+        myVar = setTimeout(showPage, 1900);
+      };
+
       let colors = {};
 
       for (let index = -60; index <= 800; index++) {
@@ -105,23 +168,26 @@
         xhr.send();
       };
 
-      Grados.on("value", (snapshot) => {
-        grados.innerHTML = "";
-        let data = snapshot.val();
-        grados.innerText += `${data} C°`;
-        (data >= -60) & (data <= 0)
-          ? (gradosIcon.className = "fas fa-thermometer-empty fa-8x")
-          : (data > 0) & (data <= 30)
-          ? (gradosIcon.className = "fas fa-thermometer-half fa-8x")
-          : (data > 30) & (data <= 60)
-          ? (gradosIcon.className = "fas fa-temperature-high fa-8x")
-          : (gradosIcon.className = "fas fa-exclamation-triangle fa-8x");
+      const showGrados = () => {
+        Grados.on("value", (snapshot) => {
+          grados.innerHTML = "";
+          let data = snapshot.val();
+          grados.innerText += `${data} C°`;
+          (data >= -60) & (data <= 0)
+            ? (gradosIcon.className = "fas fa-thermometer-empty fa-8x")
+            : (data > 0) & (data <= 30)
+            ? (gradosIcon.className = "fas fa-thermometer-half fa-8x")
+            : (data > 30) & (data <= 60)
+            ? (gradosIcon.className = "fas fa-temperature-high fa-8x")
+            : (gradosIcon.className = "fas fa-exclamation-triangle fa-8x");
 
-        sendRequest(data);
+          sendRequest(data);
 
-        document.body.style.background = `linear-gradient(102.2deg,
+          document.body.style.background = `linear-gradient(102.2deg,
               ${colors[data][0]} 9.6%, ${colors[data][1]} 96.1%)`;
-      });
+          document.body.style.color = "#fff";
+        });
+      };
     </script>
   </body>
 </html>
