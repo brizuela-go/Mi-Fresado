@@ -39,6 +39,7 @@
     h2 {
       font-size: 5rem !important;
     }
+
     .loader {
       position: relative;
       width: 16rem;
@@ -85,11 +86,9 @@
     >
       <span class="loader"></span>
     </div>
-    <main class="container" id="container">
-      <div class="d-flex justify-content-center align-items-center vh-100">
-        <div
-          class="text-center animate__animated animate__fadeIn animate__delay-4s"
-        >
+    <main>
+      <div class="d-none" id="content">
+        <div class="text-center animate__animated animate__fadeIn">
           <h1 class="display-1 mb-3">Temperatura</h1>
           <h2 class="display-3 mb-3" id="grados"></h2>
           <i class="far fa-thumbs-up fa-4x" id="grados-icon"></i>
@@ -138,12 +137,13 @@
 
       const showPage = () => {
         document.getElementById("loader").className = "d-none";
-        document.getElementById("container").style.display = "block";
+        document.getElementById("content").className =
+          "d-flex justify-content-center align-items-center vh-100";
         showGrados();
       };
 
       const wait = () => {
-        myVar = setTimeout(showPage, 4000);
+        myVar = setTimeout(showPage, 2000);
       };
 
       let colors = {};
