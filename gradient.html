@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <!-- Font Awesome -->
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <!-- Google Fonts poppins -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <!-- MDB -->
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/5.0.0/mdb.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <style type="text/css">
+    /* poppins font */
+    body {
+      font-family: "Poppins", sans-serif;
+      color: #fff;
+    }
+    h1 {
+      font-size: 8rem !important;
+    }
+    h2 {
+      font-size: 5rem !important;
+    }
+  </style>
+  <body>
+    <main class="container">
+      <div class="d-flex justify-content-center align-items-center vh-100">
+        <div class="text-center">
+          <h1 class="display-1 mb-3">Temperatura</h1>
+          <h2 class="display-3 mb-3" id="grados"></h2>
+          <i class="far fa-thumbs-up fa-4x" id="grados-icon"></i>
+        </div>
+      </div>
+    </main>
+
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/7.14.4/firebase-app.js"></script>
+
+    <!-- TODO: Add SDKs for Firebase products that you want to use
+     https://firebase.google.com/docs/web/setup#available-libraries -->
+
+    <script src="https://www.gstatic.com/firebasejs/7.14.4/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.14.4/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.14.4/firebase-database.js"></script>
+
+    <!-- Don't change the format for any other products. -->
+    <!-- etc. -->
+
+    <script>
+      // Your web app's Firebase configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyBESmlprLU-fqcwH1YnJahm2yJNG8IFJqk",
+        authDomain: "fresado-4a5be.firebaseapp.com",
+        databaseURL: "https://fresado-4a5be-default-rtdb.firebaseio.com",
+        projectId: "fresado-4a5be",
+        storageBucket: "fresado-4a5be.appspot.com",
+        messagingSenderId: "984539520783",
+        appId: "1:984539520783:web:41bcaa99dd82c5ae01a87a",
+        measurementId: "G-B7TMNREBCY",
+      };
+      // Initialize Firebase
+      firebase.initializeApp(firebaseConfig);
+      const auth = firebase.auth();
+      const fs = firebase.firestore();
+      const db = firebase.database();
+    </script>
+
+    <script>
+      const Grados = db.ref("temperatura");
+      const grados = document.getElementById("grados");
+      const gradosIcon = document.getElementById("grados-icon");
+
+      let colors = {};
+
+      for (let index = -60; index <= 800; index++) {
+        colors[index] = [
+          `rgb(
+              ${(index > 50) & (index <= 800) ? 200 + index : 100 + index},
+              ${(index > 10) & (index <= 50) ? 255 + index : 100 - index},
+              ${(index >= -60) & (index <= 10) ? 255 : 100 - index})`,
+          `rgb(${index}, ${index}, ${index})`,
+        ];
+      }
+
+      console.log(colors);
+
+      var xhr = new XMLHttpRequest();
+
+      const sendRequest = () => {
+        xhr.open("POST", "http://127.0.0.1:5000/send-sms", true);
+        xhr.send();
+      };
+
+      Grados.on("value", (snapshot) => {
+        grados.innerHTML = "";
+        let data = snapshot.val();
+        grados.innerText += `${data} C°`;
+        (data >= -60) & (data <= 0)
+          ? (gradosIcon.className = "fas fa-thermometer-empty fa-8x")
+          : (data > 0) & (data <= 30)
+          ? (gradosIcon.className = "fas fa-thermometer-half fa-8x")
+          : (data > 30) & (data <= 60)
+          ? (gradosIcon.className = "fas fa-temperature-high fa-8x")
+          : (gradosIcon.className = "fas fa-exclamation-triangle fa-8x");
+
+        sendRequest(data);
+
+        document.body.style.background = `linear-gradient(102.2deg,
+              ${colors[data][0]} 9.6%, ${colors[data][1]} 96.1%)`;
+      });
+    </script>
+  </body>
+</html>
